@@ -112,14 +112,14 @@ function AuthProvider({ children }) {
           setSession(null);
           dispatch({
             type: INITIALIZE,
-            payload: { isAuthenticated: true, user: null },
+            payload: { isAuthenticated: false, user: null },
           });
         }
       } catch (error) {
         setSession(null);
         dispatch({
           type: INITIALIZE,
-          payload: { isAuthenticated: true, user: null },
+          payload: { isAuthenticated: false, user: null },
         });
       }
     };
@@ -130,6 +130,7 @@ function AuthProvider({ children }) {
     if (updatedProfile)
       dispatch({ type: UPDATE_PROFILE, payload: updatedProfile });
   }, [updatedProfile]);
+
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post("/auth/login", { email, password });
     const { user, accessToken } = response.data;
@@ -139,6 +140,7 @@ function AuthProvider({ children }) {
       type: LOGIN_SUCCESS,
       payload: { user },
     });
+
     callback();
   };
 

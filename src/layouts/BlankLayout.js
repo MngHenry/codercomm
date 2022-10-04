@@ -3,7 +3,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Logo from "../components/Logo";
 
-export default function BlankLayout() {
+function BlankLayout() {
   return (
     <Stack minHeight="100vh" justifyContent="center" alignItems="center">
       <Logo sx={{ width: 90, height: 90, mb: 5 }} />
@@ -11,3 +11,5 @@ export default function BlankLayout() {
     </Stack>
   );
 }
+
+export default BlankLayout;

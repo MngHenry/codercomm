@@ -25,7 +25,7 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
 });
 
-const defaultValue = {
+const defaultValues = {
   email: "",
   password: "",
   remember: true,
@@ -35,7 +35,7 @@ function LoginPage() {
   const auth = useAuth();
   const methods = useForm({
     resolver: yupResolver(LoginSchema),
-    defaultValue,
+    defaultValues,
   });
   const {
     handleSubmit,
@@ -45,11 +45,13 @@ function LoginPage() {
   } = methods;
   const navigate = useNavigate();
   const location = useLocation();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     const from = location.state?.from?.pathname || "/";
     let { email, password } = data;
+
     try {
       await auth.login({ email, password }, () => {
         navigate(from, { replace: true });

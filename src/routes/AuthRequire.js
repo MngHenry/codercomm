@@ -1,11 +1,12 @@
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import useAuth from "../hooks/useAuth";
+import { Navigate, useLocation } from "react-router-dom";
 
 function AuthRequire({ children }) {
   const { isInitialized, isAuthenticated } = useAuth();
   const location = useLocation();
+
   if (!isInitialized) {
     return <LoadingScreen />;
   }
