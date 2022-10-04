@@ -35,7 +35,10 @@ function AccountGeneral() {
     aboutMe: user?.aboutMe || "",
   };
 
-  const methods = useForm({ resolver: yupResolver(UpdateUserSchema) });
+  const methods = useForm({
+    resolver: yupResolver(UpdateUserSchema),
+    defaultValues,
+  });
   const {
     setValue,
     handleSubmit,
