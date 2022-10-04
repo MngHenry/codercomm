@@ -50,6 +50,12 @@ const slice = createSlice({
       const removeComment = action.payload;
       delete state.commentsById[removeComment._id];
     },
+    editCommentSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const editComment = action.payload;
+      state.commentsById[editComment._id].content = editComment.content;
+    },
   },
 });
 
@@ -110,8 +116,21 @@ export const deleteComment =
     dispatch(slice.actions.startLoading());
     try {
       const response = await apiService.delete(`comments/${commentId}`);
-      console.log("data", response.data);
       dispatch(slice.actions.deleteCommentSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+    }
+  };
+
+export const editComment =
+  ({ commentId, commentValue }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await apiService.put(`comments/${commentId}`, {
+        content: commentValue,
+      });
+      dispatch(slice.actions.editCommentSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }

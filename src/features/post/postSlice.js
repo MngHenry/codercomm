@@ -56,20 +56,13 @@ const slice = createSlice({
       state.error = null;
       const removePost = action.payload;
       delete state.postsById[removePost._id];
-      state.currentPagePosts = state.currentPagePosts.filter(
-        (post) => post._id !== removePost._id
-      );
     },
     editPostSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
       const editPost = action.payload;
-      // if (state.currentPagePosts.length % POST_PER_PAGE === 0)
-      //   state.currentPagePosts.pop();
-      // state.currentPagePosts.unshift(editPost._id);
-      state.currentPagePosts = state.currentPagePosts.map(
-        (post) => post._id === editPost._id
-      );
+      state.postsById[editPost._id].content = editPost.content;
+      state.postsById[editPost._id].image = editPost.image;
     },
   },
 });
@@ -104,7 +97,6 @@ export const getPosts =
       });
       if (page === 1) dispatch(slice.actions.resetPost());
       dispatch(slice.actions.getPostSuccess(response.data));
-      console.log("return value", response.data);
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }
@@ -154,7 +146,6 @@ export const editPost =
         image: imageUrl,
       });
       dispatch(slice.actions.editPostSuccess(response.data));
-      console.log(response.data);
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }

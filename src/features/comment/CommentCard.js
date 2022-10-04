@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Paper,
-  Stack,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import { Avatar, Box, Paper, Stack, Typography } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
@@ -16,11 +9,14 @@ import CommentReaction from "./CommentReaction";
 import { useDispatch } from "react-redux";
 import { deleteComment } from "./commentSlice";
 import AlertDialog from "../../components/DeletePopper";
+import CommentEdit from "./EditComment";
 
 function CommentCard({ comment, author }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleActionsOpen = (e) => {
-    setAnchorEl(e.currentTarget);
+    author === comment.author._id
+      ? setAnchorEl(e.currentTarget)
+      : setAnchorEl(null);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -30,10 +26,6 @@ function CommentCard({ comment, author }) {
   const handleDeleteComment = () => {
     handleMenuClose();
     dispatch(deleteComment({ commentId: comment._id }));
-  };
-  const handleEditComment = () => {
-    console.log("author", author);
-    console.log("comment author", comment.author._id);
   };
   const renderMenu = (
     <Menu
@@ -51,13 +43,17 @@ function CommentCard({ comment, author }) {
       open={Boolean(anchorEl)}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleEditComment} sx={{ mx: 0.5 }}>
-        edit
+      <MenuItem sx={{ mx: 0.5 }} variant="subtitle2">
+        <CommentEdit
+          content={comment.content}
+          handleMenuClose={handleMenuClose}
+          commentId={comment._id}
+        />
       </MenuItem>
       <MenuItem>
         <AlertDialog
           handleDelete={handleDeleteComment}
-          handleWindowClose={handleMenuClose}
+          handleMenuClose={handleMenuClose}
           sx={{ mx: 0.5 }}
         />
       </MenuItem>
@@ -85,10 +81,10 @@ function CommentCard({ comment, author }) {
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <CommentReaction comment={comment} />
-          <IconButton onClick={handleActionsOpen}>
-            <MoreVertIcon sx={{ fontSize: 30 }} />
-            {author === comment.author._id ? renderMenu : <></>}
-          </IconButton>
+          <Box>
+            <MoreVertIcon sx={{ fontSize: 30 }} onClick={handleActionsOpen} />
+            {renderMenu}
+          </Box>
         </Box>
       </Paper>
     </Stack>

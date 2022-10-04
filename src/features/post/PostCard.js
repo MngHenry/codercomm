@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Link,
@@ -25,7 +25,9 @@ import EditPopper from "./EditPost";
 function PostCard({ post, author }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleActionsOpen = (e) => {
-    setAnchorEl(e.currentTarget);
+    author === post?.author?._id
+      ? setAnchorEl(e.currentTarget)
+      : setAnchorEl(null);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -34,10 +36,6 @@ function PostCard({ post, author }) {
   const handleDeletePost = () => {
     handleMenuClose();
     dispatch(deletePost({ postId: post._id }));
-  };
-  const handleEditPost = () => {
-    handleMenuClose();
-    console.log("post-data", post);
   };
 
   const renderActionsMenu = (
@@ -58,13 +56,12 @@ function PostCard({ post, author }) {
     >
       <MenuItem sx={{ mx: 0.5 }}>
         <EditPopper
-          handleEdit={handleEditPost}
           handleMenuClose={handleMenuClose}
           image={post.image}
+          content={post.content}
           postId={post._id}
         />
       </MenuItem>
-      {/* <MenuItem onClick={handleEditPost}> test </MenuItem> */}
       <MenuItem>
         <AlertDialog
           handleDelete={handleDeletePost}
@@ -103,7 +100,7 @@ function PostCard({ post, author }) {
         action={
           <Box>
             <MoreVertIcon sx={{ fontSize: 30 }} onClick={handleActionsOpen} />
-            {author === post.author._id ? renderActionsMenu : <></>}
+            {renderActionsMenu}
           </Box>
         }
       />

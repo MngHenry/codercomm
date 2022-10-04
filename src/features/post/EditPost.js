@@ -1,7 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 
@@ -14,13 +13,7 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { editPost } from "./postSlice";
 
-export default function EditPopper({
-  handleEdit,
-  handleMenuClose,
-  content,
-  image,
-  postId,
-}) {
+export default function EditPopper({ content, image, postId, handleMenuClose }) {
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -28,9 +21,7 @@ export default function EditPopper({
 
   const handleClose = () => {
     setOpen(false);
-    handleMenuClose();
   };
-
   const yupSchema = Yup.object().shape({
     content: Yup.string().required("Content is required"),
   });
@@ -51,9 +42,8 @@ export default function EditPopper({
   const { isLoading } = useSelector((state) => state.post);
 
   const onSubmit = (data) => {
+    handleMenuClose();
     handleClose();
-    console.log("onSubmit", data.content, data.image);
-    console.log("postId", postId);
     dispatch(editPost({ content: data.content, image: data.image, postId }));
   };
 
@@ -69,6 +59,7 @@ export default function EditPopper({
     },
     [setValue]
   );
+
   return (
     <div>
       <Typography variant="body2" onClick={handleClickOpen}>
@@ -81,9 +72,7 @@ export default function EditPopper({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {
-            "This post will be permanent removed after your confirmation. do you want to delete it?"
-          }
+          {"This post will be permanent changed after your confirmation"}
         </DialogTitle>
         <DialogContent>
           <Card sx={{ p: 3 }}>
