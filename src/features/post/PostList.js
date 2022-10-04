@@ -7,8 +7,9 @@ import { getPosts } from "./postSlice";
 
 function PostList({ userId }) {
   const [page, setPage] = useState(1);
-  const { currentPagePosts, postsById, totalPosts, isLoading, removePost } =
-    useSelector((state) => state.post);
+  const { currentPagePosts, postsById, totalPosts, isLoading } = useSelector(
+    (state) => state.post
+  );
   const posts = currentPagePosts.map((postId) => postsById[postId]);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -17,9 +18,10 @@ function PostList({ userId }) {
 
   return (
     <>
-      {posts.map((post) => (
-        <PostCard key={post._id} post={post} />
-      ))}
+      {posts.map(
+        (post) =>
+          post && <PostCard key={post._id} post={post} author={userId} />
+      )}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         {totalPosts ? (
           <LoadingButton

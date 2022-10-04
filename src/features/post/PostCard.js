@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Link,
@@ -7,7 +7,6 @@ import {
   Avatar,
   Typography,
   CardHeader,
-  IconButton,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,8 +19,10 @@ import CommentList from "../comment/CommentList";
 import CommentForm from "../comment/CommentForm";
 import { useDispatch } from "react-redux";
 import { deletePost } from "./postSlice";
+import AlertDialog from "../../components/DeletePopper";
+import EditPopper from "./EditPost";
 
-function PostCard({ post }) {
+function PostCard({ post, author }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleActionsOpen = (e) => {
     setAnchorEl(e.currentTarget);
@@ -31,11 +32,13 @@ function PostCard({ post }) {
   };
   const dispatch = useDispatch();
   const handleDeletePost = () => {
-    console.log("postId", post._id);
+    handleMenuClose();
     dispatch(deletePost({ postId: post._id }));
   };
-
-  const handleEditPost = () => {};
+  const handleEditPost = () => {
+    handleMenuClose();
+    console.log("post-data", post);
+  };
 
   const renderActionsMenu = (
     <Menu
@@ -53,11 +56,21 @@ function PostCard({ post }) {
       open={Boolean(anchorEl)}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleEditPost} sx={{ mx: 0.5 }}>
-        edit
+      <MenuItem sx={{ mx: 0.5 }}>
+        <EditPopper
+          handleEdit={handleEditPost}
+          handleMenuClose={handleMenuClose}
+          image={post.image}
+          postId={post._id}
+        />
       </MenuItem>
-      <MenuItem onClick={handleDeletePost} sx={{ mx: 0.5 }}>
-        delete
+      {/* <MenuItem onClick={handleEditPost}> test </MenuItem> */}
+      <MenuItem>
+        <AlertDialog
+          handleDelete={handleDeletePost}
+          handleMenuClose={handleMenuClose}
+          sx={{ mx: 0.5 }}
+        />
       </MenuItem>
     </Menu>
   );
@@ -88,10 +101,10 @@ function PostCard({ post }) {
           </Typography>
         }
         action={
-          <IconButton>
+          <Box>
             <MoreVertIcon sx={{ fontSize: 30 }} onClick={handleActionsOpen} />
-            {renderActionsMenu}
-          </IconButton>
+            {author === post.author._id ? renderActionsMenu : <></>}
+          </Box>
         }
       />
 
@@ -112,7 +125,7 @@ function PostCard({ post }) {
         )}
 
         <PostReaction post={post} />
-        <CommentList postId={post._id} />
+        <CommentList postId={post._id} author={author} />
         <CommentForm postId={post._id} />
       </Stack>
     </Card>

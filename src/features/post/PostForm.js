@@ -62,8 +62,6 @@ function PostForm() {
               },
             }}
           />
-          {/* <FTextField name="image" placeholder="Image" /> */}
-          {/* <input type="file" ref={fileInput} onChange={handleFile} /> */}
           <FUploadImage
             name="image"
             accept="image/*"

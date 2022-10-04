@@ -47,6 +47,8 @@ const slice = createSlice({
     deleteCommentSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
+      const removeComment = action.payload;
+      delete state.commentsById[removeComment._id];
     },
   },
 });
@@ -103,11 +105,12 @@ export const sendCommentReaction =
     }
   };
 export const deleteComment =
-  ({ commentId }) =>
+  ({ commentId, postId }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await apiService.delete(`comments/{commentId}`);
+      const response = await apiService.delete(`comments/${commentId}`);
+      console.log("data", response.data);
       dispatch(slice.actions.deleteCommentSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));

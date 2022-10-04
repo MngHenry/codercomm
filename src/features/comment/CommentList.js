@@ -6,7 +6,7 @@ import { Pagination, Stack, Typography } from "@mui/material";
 import LoadingScreen from "../../components/LoadingScreen";
 import CommentCard from "./CommentCard";
 
-function CommentList({ postId }) {
+function CommentList({ postId, author }) {
   const {
     commentsByPost,
     commentsById,
@@ -37,9 +37,16 @@ function CommentList({ postId }) {
     const comments = commentsByPost.map((commentId) => commentsById[commentId]);
     renderComments = (
       <Stack spacing={1.5}>
-        {comments.map((comment) => (
-          <CommentCard key={comment._id} comment={comment} />
-        ))}
+        {comments.map(
+          (comment) =>
+            comment && (
+              <CommentCard
+                key={comment._id}
+                comment={comment}
+                author={author}
+              />
+            )
+        )}
       </Stack>
     );
   } else if (isLoading) {

@@ -55,11 +55,20 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
       const removePost = action.payload;
-      state.postsById = state.postsById.filter(
-        (post) => post.id !== removePost._id
-      );
+      delete state.postsById[removePost._id];
       state.currentPagePosts = state.currentPagePosts.filter(
         (post) => post._id !== removePost._id
+      );
+    },
+    editPostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const editPost = action.payload;
+      // if (state.currentPagePosts.length % POST_PER_PAGE === 0)
+      //   state.currentPagePosts.pop();
+      // state.currentPagePosts.unshift(editPost._id);
+      state.currentPagePosts = state.currentPagePosts.map(
+        (post) => post._id === editPost._id
       );
     },
   },
@@ -129,6 +138,23 @@ export const deletePost =
     try {
       const response = await apiService.delete(`/posts/${postId}`);
       dispatch(slice.actions.deletePostSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+    }
+  };
+
+export const editPost =
+  ({ postId, content, image }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const imageUrl = await cloudinaryUpload(image);
+      const response = await apiService.put(`/posts/${postId}`, {
+        content,
+        image: imageUrl,
+      });
+      dispatch(slice.actions.editPostSuccess(response.data));
+      console.log(response.data);
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }

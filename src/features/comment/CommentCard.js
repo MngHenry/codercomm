@@ -14,8 +14,10 @@ import React from "react";
 import { fDate } from "../../utils/formatTime";
 import CommentReaction from "./CommentReaction";
 import { useDispatch } from "react-redux";
+import { deleteComment } from "./commentSlice";
+import AlertDialog from "../../components/DeletePopper";
 
-function CommentCard({ comment }) {
+function CommentCard({ comment, author }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleActionsOpen = (e) => {
     setAnchorEl(e.currentTarget);
@@ -25,9 +27,14 @@ function CommentCard({ comment }) {
   };
 
   const dispatch = useDispatch();
-  const handleDeleteComment = () => {};
-
-  const handleEditComment = () => {};
+  const handleDeleteComment = () => {
+    handleMenuClose();
+    dispatch(deleteComment({ commentId: comment._id }));
+  };
+  const handleEditComment = () => {
+    console.log("author", author);
+    console.log("comment author", comment.author._id);
+  };
   const renderMenu = (
     <Menu
       id="actions-menu"
@@ -47,8 +54,12 @@ function CommentCard({ comment }) {
       <MenuItem onClick={handleEditComment} sx={{ mx: 0.5 }}>
         edit
       </MenuItem>
-      <MenuItem onClick={handleDeleteComment} sx={{ mx: 0.5 }}>
-        delete
+      <MenuItem>
+        <AlertDialog
+          handleDelete={handleDeleteComment}
+          handleWindowClose={handleMenuClose}
+          sx={{ mx: 0.5 }}
+        />
       </MenuItem>
     </Menu>
   );
@@ -74,9 +85,9 @@ function CommentCard({ comment }) {
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <CommentReaction comment={comment} />
-          <IconButton>
-            <MoreVertIcon sx={{ fontSize: 30 }} onClick={handleActionsOpen} />
-            {renderMenu}
+          <IconButton onClick={handleActionsOpen}>
+            <MoreVertIcon sx={{ fontSize: 30 }} />
+            {author === comment.author._id ? renderMenu : <></>}
           </IconButton>
         </Box>
       </Paper>
